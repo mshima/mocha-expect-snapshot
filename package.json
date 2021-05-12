@@ -1,0 +1,28 @@
+{
+  "name": "mocha-expect-snapshot",
+  "version": "0.0.1",
+  "main": "index.js",
+  "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mshima/mocha-expect-snapshot.git"
+  },
+  "scripts": {
+    "pretest": "prettier . && eslint .",
+    "fix": "prettier --write . && eslint . --fix"
+  },
+  "peerDependencies": {
+    "expect": "^26.1.0"
+  },
+  "dependencies": {
+    "expect": "^26.1.0",
+    "jest-snapshot": "^26.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "prettier": "2.3.0"
+  }
+}

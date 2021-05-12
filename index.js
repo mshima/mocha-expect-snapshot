@@ -3,7 +3,7 @@ const expect = require('expect');
 
 let snapshotState;
 let snapshotStateOptions = {
-  updateSnapshot: process.argv.includes('--update-snapshot') ? 'all' : undefined,
+  updateSnapshot: process.argv.includes('--updateSnapshot') ? 'all' : undefined,
 };
 let snapshotResolverOptions = {
   rootDir: 'test',

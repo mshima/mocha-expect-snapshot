@@ -8,7 +8,9 @@
     "url": "git://github.com/mshima/mocha-expect-snapshot.git"
   },
   "scripts": {
-    "pretest": "prettier . && eslint .",
+    "pretest": "prettier --check . && eslint .",
+    "test": "mocha",
+    "update": "mocha --updateSnapshot",
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {
@@ -16,7 +18,8 @@
   },
   "dependencies": {
     "expect": "^26.1.0",
-    "jest-snapshot": "^26.1.0"
+    "jest-snapshot": "^26.1.0",
+    "mocha": "^8.4.0"
   },
   "devDependencies": {
     "eslint": "^7.26.0",

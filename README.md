@@ -16,10 +16,10 @@ describe('foo', function () {
 });
 ```
 
-Update snapshots by passing --update-snapshot option to mocha.
+Update snapshots by passing --updateSnapshot option to mocha.
 
 ```sh
-mocha --update-snapshot
+mocha --updateSnapshot
 ```
 
 ## License

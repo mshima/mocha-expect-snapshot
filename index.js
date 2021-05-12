@@ -7,6 +7,7 @@ const snapshotStateOptions = {
 };
 const snapshotResolverOptions = {
   rootDir: 'test',
+  snapshotResolver: undefined,
 };
 
 function teardown() {

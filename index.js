@@ -2,10 +2,10 @@ const { toMatchSnapshot, buildSnapshotResolver, SnapshotState } = require('jest-
 const expect = require('expect');
 
 let snapshotState;
-let snapshotStateOptions = {
+const snapshotStateOptions = {
   updateSnapshot: process.argv.includes('--updateSnapshot') ? 'all' : undefined,
 };
-let snapshotResolverOptions = {
+const snapshotResolverOptions = {
   rootDir: 'test',
 };
 
@@ -16,21 +16,17 @@ function teardown() {
   snapshotState = undefined;
 }
 
-function setOptions(stateOptions = {}, resolverOptions = {}) {
-  snapshotStateOptions = { ...snapshotStateOptions, ...stateOptions };
-  snapshotResolverOptions = { ...snapshotResolverOptions, ...resolverOptions };
-}
-
-function buildState(currentTest) {
-  const snapshotResolver = buildSnapshotResolver(snapshotResolverOptions);
+function buildState(currentTest, context = {}) {
+  const snapshotResolver = buildSnapshotResolver({ ...snapshotResolverOptions, ...context.snapshotResolverOptions });
   const snapshotFile = snapshotResolver.resolveSnapshotPath(currentTest.file);
-  return new SnapshotState(snapshotFile, snapshotStateOptions);
+  return new SnapshotState(snapshotFile, { ...snapshotStateOptions, ...context.snapshotStateOptions });
 }
 
-function createToMatchSnapshot(currentTest) {
+function createToMatchSnapshot(context) {
+  const { currentTest } = context;
   return (received, name) => {
     if (!snapshotState) {
-      snapshotState = buildState(currentTest);
+      snapshotState = buildState(currentTest, context);
     }
 
     return toMatchSnapshot.call(
@@ -60,24 +56,27 @@ function makeTestTitle(test) {
   return title.reverse().join(' ');
 }
 
+function setup(context = this) {
+  if (context.currentTest) {
+    expect.extend({
+      toMatchSnapshot: createToMatchSnapshot(context),
+    });
+  } else {
+    expect.extend({
+      toMatchSnapshot: () => {
+        throw new Error("Current test doesn't exist");
+      },
+    });
+  }
+}
+
 const mochaHooks = {
-  beforeEach() {
-    if (this.currentTest) {
-      expect.extend({
-        toMatchSnapshot: createToMatchSnapshot(this.currentTest),
-      });
-    } else {
-      expect.extend({
-        toMatchSnapshot: () => {
-          throw new Error("Current test doesn't exist");
-        },
-      });
-    }
-  },
+  beforeEach: setup,
   afterEach: teardown,
 };
 
 module.exports = {
-  setOptions,
+  setup,
+  teardown,
   mochaHooks,
 };

@@ -1,6 +1,6 @@
 {
   "name": "mocha-expect-snapshot",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
   "repository": {

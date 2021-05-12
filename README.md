@@ -10,7 +10,7 @@ Configure as a mocha [module](https://mochajs.org/#-require-module-r-module).
 
 ```json
 {
-  require: 'node_modules/mocha-expect-snapshot'
+  "require": "node_modules/mocha-expect-snapshot"
 }
 ```
 

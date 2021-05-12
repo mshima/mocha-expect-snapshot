@@ -9,7 +9,10 @@ let snapshotResolverOptions = {
   rootDir: 'test',
 };
 
-function clearState() {
+function teardown() {
+  if (snapshotState) {
+    snapshotState.save();
+  }
   snapshotState = undefined;
 }
 
@@ -30,18 +33,14 @@ function createToMatchSnapshot(currentTest) {
       snapshotState = buildState(currentTest);
     }
 
-    const result = toMatchSnapshot.call(
+    return toMatchSnapshot.call(
       {
-        snapshotState: snapshotState,
+        snapshotState,
         currentTestName: makeTestTitle(currentTest),
       },
       received,
       name || ''
     );
-
-    snapshotState.save();
-
-    return result;
   };
 }
 
@@ -75,7 +74,7 @@ const mochaHooks = {
       });
     }
   },
-  afterEach: clearState,
+  afterEach: teardown,
 };
 
 module.exports = {

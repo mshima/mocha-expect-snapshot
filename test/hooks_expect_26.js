@@ -1,7 +1,8 @@
 const proxyquire = require('proxyquire');
 const expect = require('expect26');
+const jestSnapshot = require('jest-snapshot26');
 
-const { setup, teardown } = proxyquire('../', { expect: expect });
+const { setup, teardown } = proxyquire('../', { expect: expect, 'jest-snapshot': jestSnapshot });
 
 describe('hooks with expect@26', function () {
   beforeEach(setup);

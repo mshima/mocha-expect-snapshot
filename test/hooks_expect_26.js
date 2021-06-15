@@ -1,8 +1,9 @@
-const expect = require('expect');
+const proxyquire = require('proxyquire');
+const expect = require('expect26');
 
-const { setup, teardown } = require('../');
+const { setup, teardown } = proxyquire('../', { expect: expect });
 
-describe('hooks', function () {
+describe('hooks with expect@26', function () {
   beforeEach(setup);
 
   afterEach(teardown);

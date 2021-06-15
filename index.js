@@ -17,19 +17,22 @@ function teardown() {
   snapshotState = undefined;
 }
 
-function buildState(currentTest, context = {}) {
-  const snapshotResolver = buildSnapshotResolver({ ...snapshotResolverOptions, ...context.snapshotResolverOptions });
+async function buildState(currentTest, context = {}) {
+  const snapshotResolver = await buildSnapshotResolver({
+    transform: [],
+    ...snapshotResolverOptions,
+    ...context.snapshotResolverOptions,
+  });
   const snapshotFile = snapshotResolver.resolveSnapshotPath(currentTest.file);
   return new SnapshotState(snapshotFile, { ...snapshotStateOptions, ...context.snapshotStateOptions });
 }
 
-function createToMatchSnapshot(context) {
+async function createToMatchSnapshot(context) {
   const { currentTest } = context;
+  if (!snapshotState) {
+    snapshotState = await buildState(currentTest, context);
+  }
   return (received, name) => {
-    if (!snapshotState) {
-      snapshotState = buildState(currentTest, context);
-    }
-
     return toMatchSnapshot.call(
       {
         snapshotState,
@@ -57,10 +60,10 @@ function makeTestTitle(test) {
   return title.reverse().join(' ');
 }
 
-function setup(context = this) {
+async function setup(context = this) {
   if (context.currentTest) {
     expect.extend({
-      toMatchSnapshot: createToMatchSnapshot(context),
+      toMatchSnapshot: await createToMatchSnapshot(context),
     });
   } else {
     expect.extend({

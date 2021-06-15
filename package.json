@@ -14,19 +14,21 @@
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {
-    "expect": "^26.1.0",
+    "expect": "^26.1.0 || ^27.0.4",
     "mocha": ">=8.4.0"
   },
   "dependencies": {
-    "expect": "^26.1.0",
-    "jest-snapshot": "^26.1.0"
+    "jest-snapshot": "^26.1.0 || ^27.0.4"
   },
   "devDependencies": {
     "eslint": "^7.26.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
+    "expect": "^27.0.2",
+    "expect26": "npm:expect@^26.6.2",
     "mocha": "^9.0.0",
-    "prettier": "2.3.0"
+    "prettier": "2.3.0",
+    "proxyquire": "^2.1.3"
   }
 }

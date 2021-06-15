@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "main": "index.js",
   "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
+  "files": [],
   "repository": {
     "type": "git",
     "url": "git://github.com/mshima/mocha-expect-snapshot.git"

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matching test toMachSnapshot() should match one snapshot 1`] = `
+Object {
+  "foo": "bar",
+}
+`;
+
+exports[`matching test toMachSnapshot() should match two snapshots 1`] = `
+Object {
+  "foo": "bar",
+}
+`;
+
+exports[`matching test toMachSnapshot() should match two snapshots 2`] = `
+Object {
+  "foo2": "bar",
+}
+`;

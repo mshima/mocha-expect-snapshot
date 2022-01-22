@@ -126,11 +126,18 @@ const mochaHooks = {
     });
   },
 
-  async afterAll() {
-    const unchecked = this.snapshotStates
+  afterAll() {
+    const uncheckedBefore = this.snapshotStates
       .map((snapshotState) => snapshotState.snapshotState.getUncheckedCount())
       .reduce((a, b) => a + b, 0);
-    this.snapshotsSaveStatus = await Promise.all(this.snapshotStates.map((snapshotState) => snapshotState.save()));
+
+    this.snapshotsSaveStatus = this.snapshotStates.map((snapshotState) => snapshotState.save());
+
+    const uncheckedAfter = this.snapshotStates
+      .map((snapshotState) => snapshotState.snapshotState.getUncheckedCount())
+      .reduce((a, b) => a + b, 0);
+
+    const removed = uncheckedBefore - uncheckedAfter;
     const added = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.added).reduce((a, b) => a + b, 0);
     const updated = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.updated).reduce((a, b) => a + b, 0);
     // const matched = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.matched).reduce((a, b) => a + b, 0);
@@ -143,8 +150,8 @@ const mochaHooks = {
     if (updated > 0) {
       summary.push(`${chalk.green(`  > ${updated} snapshot updated`)} from ${this.snapshotStates.length} test suite`);
     }
-    if (unchecked > 0) {
-      summary.push(`${chalk.green(`  > ${unchecked} snapshot removed`)} from ${this.snapshotStates.length} test suite`);
+    if (removed > 0) {
+      summary.push(`${chalk.green(`  > ${removed} snapshot removed`)} from ${this.snapshotStates.length} test suite`);
     }
 
     if (summary.length > 0) {

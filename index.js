@@ -3,7 +3,7 @@ const expect = require('expect');
 const chalk = require('chalk');
 
 const snapshotStateOptions = {
-  updateSnapshot: (process.argv.includes('--updateSnapshot') ? 'new' : process.env['UPDATE_SNAPSHOT']) || 'none',
+  updateSnapshot: (process.argv.includes('--updateSnapshot') ? 'all' : process.env['UPDATE_SNAPSHOT']) || 'none',
 };
 
 /**

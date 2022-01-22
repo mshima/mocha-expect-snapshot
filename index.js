@@ -1,4 +1,4 @@
-const { toMatchSnapshot, buildSnapshotResolver, SnapshotState } = require('jest-snapshot');
+const { toMatchSnapshot, toMatchInlineSnapshot, buildSnapshotResolver, SnapshotState } = require('jest-snapshot');
 const expect = require('expect');
 const chalk = require('chalk');
 
@@ -69,6 +69,19 @@ class SnapshotHolder {
       );
     };
   }
+
+  createToMatchInlineSnapshot(currentTestName) {
+    return (received, name) => {
+      return toMatchInlineSnapshot.call(
+        {
+          snapshotState: this.snapshotState,
+          currentTestName,
+        },
+        received,
+        name || ''
+      );
+    };
+  }
 }
 
 function getTestStack(test) {
@@ -101,17 +114,20 @@ const mochaHooks = {
     const { snapshotState } = testStack[1].ctx;
     const { currentTest } = this;
     if (currentTest && snapshotState) {
+      const testName = testStack
+        .map((test) => test.title)
+        .filter(Boolean)
+        .join(' ');
       expect.extend({
-        toMatchSnapshot: snapshotState.createToMatchSnapshot(
-          testStack
-            .map((test) => test.title)
-            .filter(Boolean)
-            .join(' ')
-        ),
+        toMatchSnapshot: snapshotState.createToMatchSnapshot(testName),
+        toMatchInlineSnapshot: snapshotState.createToMatchInlineSnapshot(testName),
       });
     } else {
       expect.extend({
         toMatchSnapshot: () => {
+          throw new Error("Current test or snapshot state doesn't exist");
+        },
+        toMatchInlineSnapshot: () => {
           throw new Error("Current test or snapshot state doesn't exist");
         },
       });
@@ -121,6 +137,9 @@ const mochaHooks = {
   afterEach() {
     expect.extend({
       toMatchSnapshot: () => {
+        throw new Error('Snapshot context dismissed');
+      },
+      toMatchInlineSnapshot: () => {
         throw new Error('Snapshot context dismissed');
       },
     });

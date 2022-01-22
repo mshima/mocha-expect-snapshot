@@ -22,6 +22,12 @@ const expect = require('expect');
 describe('foo', function () {
   it('matches the snapshot', function () {
     expect({ foo: 'bar' }).toMatchSnapshot();
+
+    expect({ foo: 'bar' }).toMatchInlineSnapshot(`
+Object {
+  "foo": "bar",
+}
+`);
   });
 });
 ```
@@ -49,8 +55,17 @@ describe('foo', function () {
     // https://github.com/facebook/jest/blob/817d8b6aca845dd4fcfd7f8316293e69f3a116c5/packages/jest-snapshot/src/State.ts#L25-L30
     this.snapshotState.setSnapshotFile('foo');
   });
+
   it('matches the snapshot', function () {
     expect({ foo: 'bar' }).toMatchSnapshot();
+  });
+
+  it('matches the inline snapshot', function () {
+    expect({ foo: 'bar' }).toMatchInlineSnapshot(`
+Object {
+  "foo": "bar",
+}
+`);
   });
 });
 ```

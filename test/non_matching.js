@@ -5,6 +5,15 @@ describe('non matching test', function () {
     this.snapshotStateOptions = {
       updateSnapshot: 'none',
     };
+    this.addAfterSnapshotSave((summary) => {
+      expect(summary).toEqual(
+        expect.objectContaining({
+          added: 0,
+          removed: 0,
+          updated: 0,
+        })
+      );
+    });
   });
 
   describe('toMachSnapshot()', function () {

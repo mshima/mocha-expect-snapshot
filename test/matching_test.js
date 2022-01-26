@@ -10,5 +10,17 @@ describe('matching test', function () {
       expect({ foo: 'bar' }).toMatchSnapshot();
       expect({ foo2: 'bar' }).toMatchSnapshot();
     });
+
+    it('should match error snapshots', function () {
+      expect(() => {
+        throw new Error('foo');
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    it('should match inline error snapshots', function () {
+      expect(() => {
+        throw new Error('foo');
+      }).toThrowErrorMatchingInlineSnapshot(`"foo"`);
+    });
   });
 });

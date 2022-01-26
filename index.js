@@ -1,190 +1,191 @@
-const { toMatchSnapshot, toMatchInlineSnapshot, buildSnapshotResolver, SnapshotState } = require('jest-snapshot');
-const expect = require('expect');
 const chalk = require('chalk');
+const { setState, extend } = require('expect');
+const {
+  toMatchSnapshot,
+  toMatchInlineSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+  buildSnapshotResolver,
+  SnapshotState,
+} = require('jest-snapshot');
 
-const snapshotStateOptions = {
+let defaultSnapshotResolver;
+const getSnapshotResolver = () => {
+  return defaultSnapshotResolver;
+};
+const setSnapshotResolver = (snapshotResolver) => {
+  defaultSnapshotResolver = snapshotResolver;
+};
+
+const defaultSnapshotResolverOptions = {};
+const setSnapshotResolverOptions = (snapshotResolverOptions) => {
+  Object.assign(defaultSnapshotResolverOptions, snapshotResolverOptions);
+};
+const getSnapshotResolverOptions = () => {
+  return defaultSnapshotResolverOptions;
+};
+
+const defaultSnapshotStateOptions = {
   updateSnapshot: (process.argv.includes('--updateSnapshot') ? 'all' : process.env['UPDATE_SNAPSHOT']) || 'none',
+};
+const setSnapshotStateOptions = (snapshotStateOptions) => {
+  Object.assign(defaultSnapshotStateOptions, snapshotStateOptions);
+};
+const getSnapshotStateOptions = () => {
+  return defaultSnapshotStateOptions;
+};
+
+extend({ toMatchSnapshot, toMatchInlineSnapshot, toThrowErrorMatchingInlineSnapshot, toThrowErrorMatchingSnapshot });
+
+// Without this, expect will postpone error for later at getState().suppressedErrors[].
+setState({ dontThrow: null });
+
+const buildCustomSnapshotResolver = () => {
+  return buildSnapshotResolver({
+    transform: [],
+    ...getSnapshotResolverOptions(),
+  });
+};
+
+function getTestStack(test) {
+  const stack = [test];
+  do {
+    test = test.parent;
+    stack.unshift(test);
+  } while (test.parent);
+  return stack;
+}
+
+const setupSuite = (suite) => {
+  const context = suite.ctx;
+  context.afterSnapshotSave = [];
+  context.addAfterSnapshotSave = (callback) => {
+    context.afterSnapshotSave.push(callback);
+  };
+  Object.defineProperty(context, 'snapshotState', {
+    get: function () {
+      if (!context._snapshotState) {
+        context.snapshotFile = context.snapshotFile || getSnapshotResolver().resolveSnapshotPath(suite.file);
+        const { snapshotFile, snapshotStateOptions: contextSnapshotStateOptions } = context;
+        context._snapshotState = new SnapshotState(snapshotFile, { ...getSnapshotStateOptions(), ...contextSnapshotStateOptions });
+      }
+      return context._snapshotState;
+    },
+  });
 };
 
 /**
- * Utility class to defer SnapshotState instantiation for custom `context.snapshotStateOptions`.
+ * @type SnapshotSummary
+ * @property {string} title
+ * @property {number} added
+ * @property {number} updated
+ * @property {number} removed
+ * @property {Object} saveState
  */
-class SnapshotHolder {
-  constructor(title, context) {
-    this.title = title;
-    this.context = context;
-    this.postSaveCallbacks = [];
+
+/**
+ * @param {import('jest-snapshot').SnapshotStateType}
+ * @return {SnapshotSummary}
+ */
+const saveSuite = async (suite) => {
+  const { ctx: context, title } = suite;
+  const { snapshotState, afterSnapshotSave } = context;
+  const uncheckedBefore = snapshotState.getUncheckedCount();
+
+  snapshotState.removeUncheckedKeys();
+  const saveState = snapshotState.save();
+
+  const summary = {
+    title,
+    added: snapshotState.added,
+    updated: snapshotState.updated,
+    removed: uncheckedBefore - snapshotState.getUncheckedCount(),
+    saveState,
+  };
+  for (callback of afterSnapshotSave) {
+    await callback.call(snapshotState, summary);
+  }
+  return summary;
+};
+
+/**
+ * @param {SnapshotSummary[]} summaries
+ */
+function printSummary(summaries) {
+  const removed = summaries.map((summary) => summary.removed).reduce((a, b) => a + b, 0);
+  const added = summaries.map((summary) => summary.added).reduce((a, b) => a + b, 0);
+  const updated = summaries.map((summary) => summary.updated).reduce((a, b) => a + b, 0);
+  // const matched = snapshotHolders.map((snapshotHolder) => snapshotHolder.snapshotState.matched).reduce((a, b) => a + b, 0);
+  // const unmatched = snapshotHolders.map((snapshotHolder) => snapshotHolder.snapshotState.unmatched).reduce((a, b) => a + b, 0);
+
+  const summary = [];
+  if (added > 0) {
+    summary.push(`${chalk.green(`  > ${added} snapshot written`)} from ${summaries.length} test suite`);
+  }
+  if (updated > 0) {
+    summary.push(`${chalk.green(`  > ${updated} snapshot updated`)} from ${summaries.length} test suite`);
+  }
+  if (removed > 0) {
+    summary.push(`${chalk.green(`  > ${removed} snapshot removed`)} from ${summaries.length} test suite`);
   }
 
-  async buildSnapshotResolver(testFile, snapshotResolverOptions = {}) {
-    this.snapshotResolver = await buildSnapshotResolver({
-      transform: [],
-      ...snapshotResolverOptions,
-    });
-    this.snapshotFile = this.snapshotResolver.resolveSnapshotPath(testFile);
-  }
-
-  setSnapshotFile(snapshotFile) {
-    this.snapshotFile = snapshotFile;
-  }
-
-  get snapshotState() {
-    return this.buildStateIfNeeded();
-  }
-
-  buildStateIfNeeded() {
-    if (!this.snapshotResolver || !this.snapshotFile) throw new Error('snapshotResolver or snapshotFile not found');
-    if (this._snapshotState) return this._snapshotState;
-
-    this._snapshotState = new SnapshotState(this.snapshotFile, {
-      ...snapshotStateOptions,
-      ...this.context.snapshotStateOptions,
-    });
-    return this._snapshotState;
-  }
-
-  addPostSave(postSaveCallback) {
-    this.postSaveCallbacks.push(postSaveCallback);
-  }
-
-  async save() {
-    if (!this._snapshotState) throw new Error('snapshotState is invalid');
-    this._snapshotState.removeUncheckedKeys();
-    const state = this._snapshotState.save();
-    for (const postSaveCallback of this.postSaveCallbacks) {
-      postSaveCallback.call(this);
+  if (summary.length > 0) {
+    /* istanbul ignore next, depends on mocha parallel mode */
+    if (summaries.length === 1) {
+      summary.unshift(`  ${summaries[0].title} snapshot summary`);
+    } else {
+      summary.unshift(`  Suite snapshot summary`);
     }
-    return state;
+    console.log(summary.join('\n'));
   }
-
-  createToMatchSnapshot(currentTestName) {
-    return (received, name) => {
-      return toMatchSnapshot.call(
-        {
-          snapshotState: this.snapshotState,
-          currentTestName,
-        },
-        received,
-        name || ''
-      );
-    };
-  }
-
-  createToMatchInlineSnapshot(currentTestName) {
-    return (received, name) => {
-      return toMatchInlineSnapshot.call(
-        {
-          snapshotState: this.snapshotState,
-          currentTestName,
-        },
-        received,
-        name || ''
-      );
-    };
-  }
-}
-
-function getTestStack(test) {
-  let current = test;
-  const stack = [test];
-
-  while (current.parent) {
-    current = current.parent;
-    stack.unshift(current);
-  }
-
-  return stack;
 }
 
 const mochaHooks = {
   async beforeAll() {
-    const testStack = getTestStack(this.test);
-    this.snapshotStates = await Promise.all(
-      testStack[0].suites.map(async (suite) => {
-        const snapshotState = new SnapshotHolder(suite.title, suite.ctx);
-        await snapshotState.buildSnapshotResolver(suite.file);
-        suite.ctx.snapshotState = snapshotState;
-        return snapshotState;
-      })
-    );
+    // Create snapshotState at context of every test.
+    const rootTest = getTestStack(this.test)[0];
+    getSnapshotResolver() || setSnapshotResolver(await buildCustomSnapshotResolver());
+    rootTest.suites.forEach((suite) => setupSuite(suite));
   },
 
   async beforeEach() {
-    const testStack = getTestStack(this.currentTest);
-    const { snapshotState } = testStack[1].ctx;
     const { currentTest } = this;
-    if (currentTest && snapshotState) {
-      const testName = testStack
+    const {
+      file: testPath,
+      ctx: { snapshotState },
+    } = currentTest;
+
+    setState({
+      snapshotState,
+      testPath,
+      currentTestName: getTestStack(currentTest)
         .map((test) => test.title)
         .filter(Boolean)
-        .join(' ');
-      expect.extend({
-        toMatchSnapshot: snapshotState.createToMatchSnapshot(testName),
-        toMatchInlineSnapshot: snapshotState.createToMatchInlineSnapshot(testName),
-      });
-    } else {
-      expect.extend({
-        toMatchSnapshot: () => {
-          throw new Error("Current test or snapshot state doesn't exist");
-        },
-        toMatchInlineSnapshot: () => {
-          throw new Error("Current test or snapshot state doesn't exist");
-        },
-      });
-    }
-  },
-
-  afterEach() {
-    expect.extend({
-      toMatchSnapshot: () => {
-        throw new Error('Snapshot context dismissed');
-      },
-      toMatchInlineSnapshot: () => {
-        throw new Error('Snapshot context dismissed');
-      },
+        .join(' '),
     });
   },
 
-  afterAll() {
-    const uncheckedBefore = this.snapshotStates
-      .map((snapshotState) => snapshotState.snapshotState.getUncheckedCount())
-      .reduce((a, b) => a + b, 0);
+  afterEach() {
+    setState({
+      snapshotState: undefined,
+      testPath: undefined,
+      currentTestName: undefined,
+    });
+  },
 
-    this.snapshotsSaveStatus = this.snapshotStates.map((snapshotState) => snapshotState.save());
-
-    const uncheckedAfter = this.snapshotStates
-      .map((snapshotState) => snapshotState.snapshotState.getUncheckedCount())
-      .reduce((a, b) => a + b, 0);
-
-    const removed = uncheckedBefore - uncheckedAfter;
-    const added = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.added).reduce((a, b) => a + b, 0);
-    const updated = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.updated).reduce((a, b) => a + b, 0);
-    // const matched = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.matched).reduce((a, b) => a + b, 0);
-    // const unmatched = this.snapshotStates.map((snapshotState) => snapshotState.snapshotState.unmatched).reduce((a, b) => a + b, 0);
-
-    const summary = [];
-    if (added > 0) {
-      summary.push(`${chalk.green(`  > ${added} snapshot written`)} from ${this.snapshotStates.length} test suite`);
-    }
-    if (updated > 0) {
-      summary.push(`${chalk.green(`  > ${updated} snapshot updated`)} from ${this.snapshotStates.length} test suite`);
-    }
-    if (removed > 0) {
-      summary.push(`${chalk.green(`  > ${removed} snapshot removed`)} from ${this.snapshotStates.length} test suite`);
-    }
-
-    if (summary.length > 0) {
-      setTimeout(() => {
-        if (this.snapshotStates.length === 1) {
-          summary.unshift(`  ${this.snapshotStates[0].title}`);
-        }
-        console.log(summary.join('\n') + '\n');
-      });
-    }
+  async afterAll() {
+    const rootTest = getTestStack(this.test)[0];
+    const snapshotsSummaries = await Promise.all(rootTest.suites.map((suite) => saveSuite(suite)));
+    printSummary(snapshotsSummaries);
   },
 };
 
 module.exports = {
-  snapshotStateOptions,
+  setSnapshotResolver,
+  getSnapshotResolver,
+  setSnapshotResolverOptions,
+  getSnapshotResolverOptions,
+  setSnapshotStateOptions,
+  getSnapshotStateOptions,
   mochaHooks,
 };

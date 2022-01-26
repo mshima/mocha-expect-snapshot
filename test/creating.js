@@ -14,12 +14,18 @@ describe('creting test', function () {
       updateSnapshot: 'all',
     };
     if (!createSnapshot) {
-      this.snapshotState.setSnapshotFile(tempSnapshotFile);
-    }
-    if (!createSnapshot) {
-      this.snapshotState.addPostSave(() => {
+      this.snapshotFile = tempSnapshotFile;
+      this.addAfterSnapshotSave((summary) => {
         expect(readFileSync(tempSnapshotFile).toString()).toBe(readFileSync(snapshotFile).toString());
         rmSync(tempSnapshotFile);
+
+        expect(summary).toEqual(
+          expect.objectContaining({
+            added: 3,
+            removed: 0,
+            updated: 0,
+          })
+        );
       });
     }
   });

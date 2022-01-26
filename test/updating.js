@@ -17,15 +17,22 @@ describe('updating test', function () {
     };
     if (!createSnapshot) {
       copyFileSync(outdatedSnapshotFile, tempSnapshotFile);
-      this.snapshotState.setSnapshotFile(tempSnapshotFile);
-      this.snapshotState.addPostSave(() => {
+      this.snapshotFile = tempSnapshotFile;
+      this.addAfterSnapshotSave((summary) => {
         expect(readFileSync(tempSnapshotFile).toString()).toBe(readFileSync(updatedSnapshotFile).toString());
         rmSync(tempSnapshotFile);
+        expect(summary).toEqual(
+          expect.objectContaining({
+            added: 1,
+            removed: 1,
+            updated: 1,
+          })
+        );
       });
     } else if (createOutdated) {
-      this.snapshotState.setSnapshotFile(outdatedSnapshotFile);
+      this.snapshotFile = outdatedSnapshotFile;
     } else {
-      this.snapshotState.setSnapshotFile(updatedSnapshotFile);
+      this.snapshotFile = updatedSnapshotFile;
     }
   });
 

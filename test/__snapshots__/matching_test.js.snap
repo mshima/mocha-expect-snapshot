@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`matching test toMachSnapshot() should match error snapshots 1`] = `"foo"`;
+
 exports[`matching test toMachSnapshot() should match one snapshot 1`] = `
 Object {
   "foo": "bar",

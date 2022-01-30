@@ -42,7 +42,9 @@ Or by passing `UPDATE_SNAPSHOT` environment variable with value `all` or `new`.
 UPDATE_SNAPSHOT=all mocha
 ```
 
-Custom configuration:
+### Custom configuration
+
+File specific configuration must be set at top-level before, SnapshotState is created once per file:
 
 ```js
 const expect = require('expect');
@@ -66,6 +68,33 @@ Object {
 `);
   });
 });
+```
+
+Global configuration must be implemented with a custom [hook plugin](https://mochajs.org/#defining-a-root-hook-plugin]
+
+```js
+// test/hooks.js
+const {
+  setSnapshotResolver,
+  getSnapshotResolver,
+  setSnapshotResolverOptions,
+  getSnapshotResolverOptions,
+  setSnapshotStateOptions,
+  getSnapshotStateOptions,
+  mochaHooks,
+} = require('mocha-expect-snapshot');
+
+// set your custom config
+
+module.exports = {
+  mochaHooks,
+};
+```
+
+```json
+{
+  "require": "./test/hooks.js"
+}
 ```
 
 This module is a reimplementation of [expect-mocha-snapshot](https://github.com/blogfoster/expect-mocha-snapshot).

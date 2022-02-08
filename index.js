@@ -92,7 +92,17 @@ const saveSuite = async (suite) => {
   const { snapshotState, afterSnapshotSave } = context;
   const uncheckedBefore = snapshotState.getUncheckedCount();
 
-  snapshotState.removeUncheckedKeys();
+  const getAllSuites = (suites) => suites.map((suite) => [suite, ...getAllSuites(suite.suites)]).flat();
+  const allTests = [
+    ...suite.tests,
+    ...getAllSuites(suite.suites)
+      .map((suite) => suite.tests)
+      .flat(),
+  ];
+  const allStates = allTests.map((test) => test.state);
+  if (!allStates.includes('failed')) {
+    snapshotState.removeUncheckedKeys();
+  }
   const saveState = snapshotState.save();
 
   const summary = {

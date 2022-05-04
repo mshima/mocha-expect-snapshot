@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const { setState, extend } = require('expect');
+const { expect } = require('expect');
 const {
   toMatchSnapshot,
   toMatchInlineSnapshot,
@@ -8,6 +8,8 @@ const {
   buildSnapshotResolver,
   SnapshotState,
 } = require('jest-snapshot');
+
+const { extend, setState } = expect;
 
 let defaultSnapshotResolver;
 const getSnapshotResolver = () => {

@@ -1,4 +1,4 @@
-import expect from 'expect';
+import { expect } from 'expect';
 
 describe('mjs inline test', function () {
   describe('toMachSnapshot()', function () {

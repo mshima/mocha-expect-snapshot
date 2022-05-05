@@ -30,7 +30,7 @@
     "jest-snapshot": "^28.0.3"
   },
   "engines": {
-    "node": "12.13.0"
+    "node": ">=12.13.0"
   },
   "devDependencies": {
     "eslint": "^7.26.0",

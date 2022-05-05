@@ -1,4 +1,4 @@
-const expect = require('expect');
+const { expect } = require('expect');
 const proxyquire = require('proxyquire');
 const {
   setSnapshotResolver,

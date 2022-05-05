@@ -15,7 +15,7 @@ Configure as a mocha [module](https://mochajs.org/#-require-module-r-module).
 Implement test.
 
 ```js
-const expect = require('expect');
+const { expect } = require('expect');
 
 describe('foo', function () {
   it('matches the snapshot', function () {
@@ -47,7 +47,7 @@ UPDATE_SNAPSHOT=all mocha
 File specific configuration must be set at top-level before, SnapshotState is created once per file:
 
 ```js
-const expect = require('expect');
+const { expect } = require('expect');
 
 describe('foo', function () {
   before(function () {

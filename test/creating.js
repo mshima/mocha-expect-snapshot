@@ -1,4 +1,4 @@
-const expect = require('expect');
+const { expect } = require('expect');
 const crypto = require('crypto');
 const { unlinkSync, rmSync = unlinkSync, readFileSync } = require('fs');
 const { resolve } = require('path');

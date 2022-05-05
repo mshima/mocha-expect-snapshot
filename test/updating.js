@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const expect = require('expect');
+const { expect } = require('expect');
 const { unlinkSync, rmSync = unlinkSync, readFileSync, copyFileSync } = require('fs');
 const { resolve } = require('path');
 

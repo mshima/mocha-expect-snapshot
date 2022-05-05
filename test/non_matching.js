@@ -1,4 +1,4 @@
-const expect = require('expect');
+const { expect } = require('expect');
 
 describe('non matching test', function () {
   before(function () {

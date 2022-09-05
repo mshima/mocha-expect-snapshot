@@ -11,37 +11,63 @@ const {
 
 const { extend, setState } = expect;
 
+/** @type {import('jest-snapshot').SnapshotResolver} */
 let defaultSnapshotResolver;
+
 const getSnapshotResolver = () => {
   return defaultSnapshotResolver;
 };
+
+/** @type {(snapshotResolver: import('jest-snapshot').SnapshotResolver) => void} */
 const setSnapshotResolver = (snapshotResolver) => {
   defaultSnapshotResolver = snapshotResolver;
 };
 
+/** @type {import('@jest/types').Config.ProjectConfig} */
 const defaultSnapshotResolverOptions = {};
+
+/** @type {(snapshotResolverOptions: import('@jest/types').Config.ProjectConfig) => void} */
 const setSnapshotResolverOptions = (snapshotResolverOptions) => {
   Object.assign(defaultSnapshotResolverOptions, snapshotResolverOptions);
 };
+
 const getSnapshotResolverOptions = () => {
   return defaultSnapshotResolverOptions;
 };
 
+/** @typedef {ConstructorParameters<typeof import('jest-snapshot').SnapshotState>[1]} SnapshotStateOptions */
+/** @type {SnapshotStateOptions} */
 const defaultSnapshotStateOptions = {
-  updateSnapshot: (process.argv.includes('--updateSnapshot') ? 'all' : process.env['UPDATE_SNAPSHOT']) || 'none',
+  updateSnapshot:
+    process.argv.includes('--updateSnapshot') || process.argv.includes('--update-snapshot')
+      ? 'all'
+      : process.env['UPDATE_SNAPSHOT'] || 'none',
 };
+
+/** @type {(snapshotStateOptions: SnapshotStateOptions) => void} */
 const setSnapshotStateOptions = (snapshotStateOptions) => {
   Object.assign(defaultSnapshotStateOptions, snapshotStateOptions);
 };
+
 const getSnapshotStateOptions = () => {
   return defaultSnapshotStateOptions;
 };
 
-extend({ toMatchSnapshot, toMatchInlineSnapshot, toThrowErrorMatchingInlineSnapshot, toThrowErrorMatchingSnapshot });
+extend({
+  // https://github.com/facebook/jest/blob/e0b33b74b5afd738edc183858b5c34053cfc26dd/e2e/custom-inline-snapshot-matchers/__tests__/bail.test.js
+  toMatchSnapshot(...args) {
+    this.dontThrow = () => {};
+    return toMatchSnapshot.call(this, ...args);
+  },
+  toMatchInlineSnapshot(...args) {
+    this.dontThrow = () => {};
+    return toMatchInlineSnapshot.call(this, ...args);
+  },
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+});
 
-// Without this, expect will postpone error for later at getState().suppressedErrors[].
-setState({ dontThrow: null });
-
+/** @type {(import('@jest/types').Config.ProjectConfig) => Promise<import('jest-snapshot').SnapshotResolver>;} */
 const buildCustomSnapshotResolver = () => {
   return buildSnapshotResolver({
     transform: [],

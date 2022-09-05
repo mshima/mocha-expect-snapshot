@@ -42,6 +42,41 @@ Or by passing `UPDATE_SNAPSHOT` environment variable with value `all` or `new`.
 UPDATE_SNAPSHOT=all mocha
 ```
 
+### jest-image-snapshot
+
+Install.
+
+```sh
+npm install jest-image-snapshot --save-dev
+```
+
+Configure as a mocha [module](https://mochajs.org/#-require-module-r-module).
+
+```json
+{
+  "require": ["mocha-expect-snapshot", "mocha-expect-snapshot/image"]
+}
+```
+
+Create tests.
+
+```js
+const { expect } = require('expect');
+const { toMatchImageSnapshot } = require('jest-image-snapshot');
+
+expect.extend({
+  toMatchImageSnapshot(...args) {
+    this.dontThrow = () => {};
+    return toMatchImageSnapshot.call(this, ...args);
+  },
+});
+
+it('test image', () => {
+  const image = ...
+  expect(image).toMatchImageSnapshot();
+});
+```
+
 ### Custom configuration
 
 File specific configuration must be set at top-level before, SnapshotState is created once per file:

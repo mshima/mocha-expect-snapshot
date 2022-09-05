@@ -2,13 +2,24 @@
   "name": "mocha-expect-snapshot",
   "version": "6.0.0",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./image": "./image.js"
+  },
   "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
   "keywords": [
     "mocha",
     "expect",
-    "snapshot"
+    "snapshot",
+    "jest-snapshot",
+    "test",
+    "jest",
+    "jest-image-snapshot"
   ],
-  "files": [],
+  "files": [
+    "index.js",
+    "image.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/mshima/mocha-expect-snapshot.git"
@@ -38,6 +49,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "expect": "^29.0.0",
+    "jest-image-snapshot": "^5.2.0",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",

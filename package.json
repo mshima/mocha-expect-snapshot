@@ -22,12 +22,12 @@
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {
-    "expect": "^28.0.2",
+    "expect": "^29.0.0",
     "mocha": "^8.4.0 || ^9.0.0 || ^10.0.0"
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "jest-snapshot": "^28.0.3"
+    "jest-snapshot": "^29.0.0"
   },
   "engines": {
     "node": ">=12.13.0"
@@ -37,7 +37,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "expect": "^28.0.2",
+    "expect": "^29.0.0",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",

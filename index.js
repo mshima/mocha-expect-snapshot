@@ -42,6 +42,11 @@ const defaultSnapshotStateOptions = {
     process.argv.includes('--updateSnapshot') || process.argv.includes('--update-snapshot')
       ? 'all'
       : process.env['UPDATE_SNAPSHOT'] || 'none',
+
+  snapshotFormat: {
+    escapeString: false,
+    printBasicPrototype: false,
+  },
 };
 
 /** @type {(snapshotStateOptions: SnapshotStateOptions) => void} */

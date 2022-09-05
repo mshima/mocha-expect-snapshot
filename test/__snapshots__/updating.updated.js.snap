@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`updating test should be created 1`] = `
-Object {
+{
   "bar": "foo",
 }
 `;
 
 exports[`updating test should be updated 1`] = `
-Object {
+{
   "bar": "new value",
 }
 `;
 
 exports[`updating test should match one snapshot 1`] = `
-Object {
+{
   "foo": "bar",
 }
 `;

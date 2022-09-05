@@ -1,10 +1,20 @@
 const { expect } = require('expect');
 
+const updateTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
+
 describe('inline test', function () {
+  if (updateTestSnapshot) {
+    before(function () {
+      this.snapshotStateOptions = {
+        updateSnapshot: 'all',
+      };
+    });
+  }
+
   describe('toMachSnapshot()', function () {
     it('should match one snapshot', function () {
       expect({ foo: 'bar' }).toMatchInlineSnapshot(`
-Object {
+{
   "foo": "bar",
 }
 `);
@@ -12,12 +22,12 @@ Object {
 
     it('should match two snapshots', function () {
       expect({ foo: 'bar' }).toMatchInlineSnapshot(`
-Object {
+{
   "foo": "bar",
 }
 `);
       expect({ foo2: 'bar' }).toMatchInlineSnapshot(`
-Object {
+{
   "foo2": "bar",
 }
 `);

@@ -18,7 +18,7 @@
     "test": "npm run mocha:serial && npm run mocha:parallel",
     "mocha:parallel": "nyc --reporter=text mocha --parallel",
     "mocha:serial": "mocha --no-parallel",
-    "update": "mocha --updateSnapshot",
+    "update": "UPDATE_TEST_SNAPSHOT=true mocha && UPDATE_EXPECTED_SNAPSHOT=true mocha",
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {

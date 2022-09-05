@@ -3,19 +3,19 @@
 exports[`matching test toMachSnapshot() should match error snapshots 1`] = `"foo"`;
 
 exports[`matching test toMachSnapshot() should match one snapshot 1`] = `
-Object {
+{
   "foo": "bar",
 }
 `;
 
 exports[`matching test toMachSnapshot() should match two snapshots 1`] = `
-Object {
+{
   "foo": "bar",
 }
 `;
 
 exports[`matching test toMachSnapshot() should match two snapshots 2`] = `
-Object {
+{
   "foo2": "bar",
 }
 `;

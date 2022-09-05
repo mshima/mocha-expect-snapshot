@@ -3,11 +3,12 @@ const { expect } = require('expect');
 const { unlinkSync, rmSync = unlinkSync, readFileSync, copyFileSync } = require('fs');
 const { resolve } = require('path');
 
-const createSnapshot = false;
-const createOutdated = false;
+const createExpectedSnapshot = process.env.UPDATE_EXPECTED_SNAPSHOT === 'true';
+const createTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
+const mode = createTestSnapshot ? 'createTestSnapshot' : createExpectedSnapshot ? 'createExpectedSnapshot' : 'test';
 
 describe('updating test', function () {
-  const updatedSnapshotFile = resolve('test', '__snapshots__', 'updating.updated.js.snap');
+  const expectedSnapshotFile = resolve('test', '__snapshots__', 'updating.updated.js.snap');
   const outdatedSnapshotFile = resolve('test', '__snapshots__', 'updating.outdated.js.snap');
   const tempSnapshotFile = resolve('test', '__snapshots__', 'updating.js.snap' + +crypto.randomBytes(4).readUInt32LE(0));
 
@@ -15,11 +16,15 @@ describe('updating test', function () {
     this.snapshotStateOptions = {
       updateSnapshot: 'all',
     };
-    if (!createSnapshot) {
+    if (mode === 'createTestSnapshot') {
+      this.snapshotFile = outdatedSnapshotFile;
+    } else if (mode === 'createExpectedSnapshot') {
+      this.snapshotFile = expectedSnapshotFile;
+    } else {
       copyFileSync(outdatedSnapshotFile, tempSnapshotFile);
       this.snapshotFile = tempSnapshotFile;
       this.addAfterSnapshotSave((summary) => {
-        expect(readFileSync(tempSnapshotFile).toString()).toBe(readFileSync(updatedSnapshotFile).toString());
+        expect(readFileSync(tempSnapshotFile).toString()).toBe(readFileSync(expectedSnapshotFile).toString());
         rmSync(tempSnapshotFile);
         expect(summary).toEqual(
           expect.objectContaining({
@@ -29,30 +34,26 @@ describe('updating test', function () {
           })
         );
       });
-    } else if (createOutdated) {
-      this.snapshotFile = outdatedSnapshotFile;
-    } else {
-      this.snapshotFile = updatedSnapshotFile;
     }
   });
 
-  if (createSnapshot && createOutdated) {
+  if (mode === 'createTestSnapshot') {
     it('should be deleted', function () {
       expect({ foo: 'bar' }).toMatchSnapshot();
     });
   }
 
-  if (!createSnapshot || !createOutdated) {
+  if (mode === 'createExpectedSnapshot' || mode === 'test') {
     it('should be created', function () {
       expect({ bar: 'foo' }).toMatchSnapshot();
     });
   }
 
-  if (!createSnapshot || !createOutdated) {
+  if (mode === 'createExpectedSnapshot' || mode === 'test') {
     it('should be updated', function () {
       expect({ bar: 'new value' }).toMatchSnapshot();
     });
-  } else if (createOutdated) {
+  } else {
     it('should be updated', function () {
       expect({ bar: 'old value' }).toMatchSnapshot();
     });

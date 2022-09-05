@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const { unlinkSync, rmSync = unlinkSync, readFileSync } = require('fs');
 const { resolve } = require('path');
 
-const createSnapshot = false;
+const updateTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
 
 describe('creting test', function () {
   const tempSnapshotFile = resolve('test', '__snapshots__', 'creating.js.snap.' + crypto.randomBytes(4).readUInt32LE(0));
@@ -13,7 +13,7 @@ describe('creting test', function () {
     this.snapshotStateOptions = {
       updateSnapshot: 'all',
     };
-    if (!createSnapshot) {
+    if (!updateTestSnapshot) {
       this.snapshotFile = tempSnapshotFile;
       this.addAfterSnapshotSave((summary) => {
         expect(readFileSync(tempSnapshotFile).toString()).toBe(readFileSync(snapshotFile).toString());

@@ -62,7 +62,6 @@ Create tests.
 
 ```js
 const { expect } = require('expect');
-const { toMatchImageSnapshot } = require('jest-image-snapshot');
 
 it('test image', () => {
   const image = ...

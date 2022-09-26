@@ -30,6 +30,24 @@ Object {
 });
 ```
 
+Typed expect
+
+```js
+import { jestExpect as expect } from 'mocha-expect-snapshot';
+
+describe('foo', function () {
+  it('matches the snapshot', function () {
+    expect({ foo: 'bar' }).toMatchSnapshot();
+
+    expect({ foo: 'bar' }).toMatchInlineSnapshot(`
+Object {
+  "foo": "bar",
+}
+`);
+  });
+});
+```
+
 Update snapshots by passing --updateSnapshot option to mocha (not compatible with parallel mode).
 
 ```sh
@@ -51,6 +69,14 @@ npm install jest-image-snapshot --save-dev
 ```
 
 Configure as a mocha [module](https://mochajs.org/#-require-module-r-module).
+
+```json
+{
+  "require": ["mocha-expect-snapshot/image"]
+}
+```
+
+For both:
 
 ```json
 {

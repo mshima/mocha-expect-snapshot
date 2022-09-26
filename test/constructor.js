@@ -7,7 +7,7 @@ const {
   getSnapshotResolverOptions,
   setSnapshotStateOptions,
   getSnapshotStateOptions,
-} = require('..');
+} = require('../lib/jest-snapshot');
 
 describe('lifecycle', function () {
   before(function () {
@@ -98,7 +98,7 @@ describe('lifecycle', function () {
     });
 
     it('should set snapshotStateOptions.updateSnapshot value', function () {
-      const { getSnapshotStateOptions } = proxyquire('../lib/index', {});
+      const { getSnapshotStateOptions } = proxyquire('../lib/hooks.js', {});
       expect(getSnapshotStateOptions().updateSnapshot).toBe('FOO_BAR');
     });
   });
@@ -116,7 +116,7 @@ describe('lifecycle', function () {
     });
 
     it('should load snapshotStateOptions.updateSnapshot value', function () {
-      const { getSnapshotStateOptions } = proxyquire('../lib/index', {});
+      const { getSnapshotStateOptions } = proxyquire('../lib/hooks.js', {});
       expect(getSnapshotStateOptions().updateSnapshot).toBe('all');
     });
   });

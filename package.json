@@ -1,9 +1,12 @@
 {
   "name": "mocha-expect-snapshot",
   "version": "6.1.0",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "exports": {
-    ".": "./index.js",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
     "./image": "./image.js"
   },
   "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
@@ -17,8 +20,7 @@
     "jest-image-snapshot"
   ],
   "files": [
-    "index.js",
-    "image.js"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -33,10 +35,11 @@
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {
-    "expect": "^29.0.0",
     "mocha": "^8.4.0 || ^9.0.0 || ^10.0.0"
   },
   "dependencies": {
+    "expect": "^29.0.0",
+    "@jest/expect": "^29.0.0",
     "chalk": "^4.1.2",
     "jest-snapshot": "^29.0.0"
   },

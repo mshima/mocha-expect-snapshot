@@ -98,7 +98,7 @@ describe('lifecycle', function () {
     });
 
     it('should set snapshotStateOptions.updateSnapshot value', function () {
-      const { getSnapshotStateOptions } = proxyquire('../index', {});
+      const { getSnapshotStateOptions } = proxyquire('../lib/index', {});
       expect(getSnapshotStateOptions().updateSnapshot).toBe('FOO_BAR');
     });
   });
@@ -116,7 +116,7 @@ describe('lifecycle', function () {
     });
 
     it('should load snapshotStateOptions.updateSnapshot value', function () {
-      const { getSnapshotStateOptions } = proxyquire('../index', {});
+      const { getSnapshotStateOptions } = proxyquire('../lib/index', {});
       expect(getSnapshotStateOptions().updateSnapshot).toBe('all');
     });
   });

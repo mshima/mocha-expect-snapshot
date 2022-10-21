@@ -1,6 +1,6 @@
 {
   "name": "mocha-expect-snapshot",
-  "version": "6.2.0",
+  "version": "7.0.0",
   "main": "./lib/jest-snapshot.js",
   "types": "./lib/jest-snapshot-types.d.ts",
   "exports": {

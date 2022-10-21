@@ -80,7 +80,7 @@ For both:
 
 ```json
 {
-  "require": ["mocha-expect-snapshot", "mocha-expect-snapshot/image"]
+  "require": ["mocha-expect-snapshot/combined"]
 }
 ```
 

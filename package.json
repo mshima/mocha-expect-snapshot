@@ -2,15 +2,23 @@
   "name": "mocha-expect-snapshot",
   "version": "6.2.0",
   "main": "./lib/jest-snapshot.js",
-  "types": "./lib/jest-snapshot.d.ts",
+  "types": "./lib/jest-snapshot-types.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/jest-snapshot.d.ts",
+      "types": "./lib/jest-snapshot-types.d.ts",
       "default": "./lib/jest-snapshot.js"
     },
     "./old-format": {
-      "types": "./lib/jest-snapshot.d.ts",
+      "types": "./lib/jest-snapshot-types.d.ts",
       "default": "./lib/jest-snapshot-old-format.js"
+    },
+    "./new-format": {
+      "types": "./lib/jest-snapshot-types.d.ts",
+      "default": "./lib/jest-snapshot-new-format.js"
+    },
+    "./combined": {
+      "types": "./lib/jest-snapshot-types.d.ts",
+      "default": "./lib/combined.js"
     },
     "./image": "./lib/jest-image-snapshot.js"
   },

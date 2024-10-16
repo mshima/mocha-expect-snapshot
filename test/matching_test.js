@@ -1,13 +1,11 @@
-const { expect } = require('expect');
+import { expect } from '../dist/index.js';
 
 const updateTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
 
 describe('matching test', function () {
   if (updateTestSnapshot) {
-    before(function () {
-      this.snapshotStateOptions = {
-        updateSnapshot: 'all',
-      };
+    beforeEach(function () {
+      this.snapshotClient.snapshotState._updateSnapshot = 'all';
     });
   }
 
@@ -30,7 +28,7 @@ describe('matching test', function () {
     it('should match inline error snapshots', function () {
       expect(() => {
         throw new Error('foo');
-      }).toThrowErrorMatchingInlineSnapshot(`"foo"`);
+      }).toThrowErrorMatchingInlineSnapshot(`[Error: foo]`);
     });
   });
 });

@@ -1,26 +1,18 @@
 {
   "name": "mocha-expect-snapshot",
   "version": "7.0.0",
-  "main": "./lib/jest-snapshot.js",
-  "types": "./lib/jest-snapshot-types.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./lib/jest-snapshot-types.d.ts",
-      "default": "./lib/jest-snapshot.js"
-    },
-    "./old-format": {
-      "types": "./lib/jest-snapshot-types.d.ts",
-      "default": "./lib/jest-snapshot-old-format.js"
-    },
-    "./new-format": {
-      "types": "./lib/jest-snapshot-types.d.ts",
-      "default": "./lib/jest-snapshot-new-format.js"
-    },
-    "./combined": {
-      "types": "./lib/jest-snapshot-types.d.ts",
-      "default": "./lib/combined.js"
-    },
-    "./image": "./lib/jest-image-snapshot.js"
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
   },
   "bugs": "https://github.com/mshima/mocha-expect-snapshot/issues",
   "keywords": [
@@ -33,14 +25,17 @@
     "jest-image-snapshot"
   ],
   "files": [
-    "lib"
+    "dist",
+    "global.d.ts"
   ],
   "repository": {
     "type": "git",
     "url": "git://github.com/mshima/mocha-expect-snapshot.git"
   },
   "scripts": {
-    "pretest": "prettier --check . && eslint .",
+    "build": "tsup",
+    "prepare": "npm run build",
+    "pretest": "prettier --check . && eslint . && npm run build",
     "test": "npm run mocha:serial && npm run mocha:parallel",
     "mocha:parallel": "nyc --reporter=text mocha --parallel",
     "mocha:serial": "mocha --no-parallel",
@@ -48,28 +43,27 @@
     "fix": "prettier --write . && eslint . --fix"
   },
   "peerDependencies": {
-    "expect": "^29.0.0",
-    "mocha": "^8.4.0 || ^9.0.0 || ^10.0.0"
+    "mocha": "^10.7.3"
   },
   "dependencies": {
-    "expect": "^29.0.0",
-    "@jest/expect": "^29.0.0",
-    "chalk": "^4.1.2",
-    "jest-snapshot": "^29.0.0"
+    "@vitest/expect": "^2.1.3",
+    "@vitest/snapshot": "^2.1.3",
+    "picocolors": "^1.1.1"
   },
   "engines": {
-    "node": ">=14.15.0"
+    "node": ">=18.19.0 || >=20.6.0"
   },
   "devDependencies": {
-    "eslint": "^7.26.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "expect": "^29.0.0",
-    "jest-image-snapshot": "^5.2.0",
-    "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
-    "prettier": "^2.3.1",
-    "proxyquire": "^2.1.3"
+    "@node-loaders/esbuild": "^2.0.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "^18.19.55",
+    "@yeoman/eslint": "^0.2.0",
+    "eslint": "^9.12.0",
+    "mocha": "^10.7.3",
+    "nyc": "^17.1.0",
+    "prettier": "^2.3.3",
+    "tsup": "^8.3.0",
+    "typescript": "5.5.4",
+    "typescript-eslint": "^8.9.0"
   }
 }

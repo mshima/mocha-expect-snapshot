@@ -1,31 +1,13 @@
-const { expect } = require('expect');
+import { expect } from '../dist/index.js';
 
 const updateTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
 
 describe('non matching test', function () {
-  before(function () {
+  beforeEach(function () {
     if (updateTestSnapshot) {
-      this.snapshotStateOptions = {
-        updateSnapshot: 'all',
-        snapshotFormat: {
-          escapeString: true,
-          printBasicPrototype: true,
-        },
-      };
+      this.snapshotClient.snapshotState._updateSnapshot = 'all';
     } else {
-      this.snapshotStateOptions = {
-        updateSnapshot: 'none',
-      };
-
-      this.addAfterSnapshotSave((summary) => {
-        expect(summary).toEqual(
-          expect.objectContaining({
-            added: 0,
-            removed: 0,
-            updated: 0,
-          })
-        );
-      });
+      this.snapshotClient.snapshotState._updateSnapshot = 'none';
     }
   });
 

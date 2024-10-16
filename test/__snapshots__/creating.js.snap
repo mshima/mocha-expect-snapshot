@@ -1,18 +1,18 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// mocha-expect-snapshot snapshot v1
 
-exports[`creting test toMachSnapshot() should match one snapshot 1`] = `
+exports[`creating test > toMachSnapshot() > should match one snapshot 1`] = `
 {
   "foo": "bar",
 }
 `;
 
-exports[`creting test toMachSnapshot() should match two snapshots 1`] = `
+exports[`creating test > toMachSnapshot() > should match two snapshots 1`] = `
 {
   "foo": "bar",
 }
 `;
 
-exports[`creting test toMachSnapshot() should match two snapshots 2`] = `
+exports[`creating test > toMachSnapshot() > should match two snapshots 2`] = `
 {
   "foo2": "bar",
 }

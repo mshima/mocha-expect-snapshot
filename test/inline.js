@@ -1,4 +1,4 @@
-const { expect } = require('expect');
+import { expect } from '../dist/index.js';
 
 const updateTestSnapshot = process.env.UPDATE_TEST_SNAPSHOT === 'true';
 

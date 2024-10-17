@@ -4,10 +4,6 @@
   "type": "module",
   "exports": {
     ".": {
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      },
       "default": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
@@ -33,7 +29,7 @@
     "url": "git://github.com/mshima/mocha-expect-snapshot.git"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsc",
     "prepare": "npm run build",
     "pretest": "prettier --check . && eslint . && npm run build",
     "test": "npm run mocha:serial && npm run mocha:parallel",

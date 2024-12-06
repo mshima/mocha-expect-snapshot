@@ -49,9 +49,9 @@
   },
   "dependencies": {
     "@jest/expect": "^29.0.0",
-    "chalk": "^4.1.2",
     "expect": "^29.0.0",
-    "jest-snapshot": "^29.0.0"
+    "jest-snapshot": "^29.0.0",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.9",

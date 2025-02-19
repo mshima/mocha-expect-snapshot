@@ -69,12 +69,14 @@
   },
   "peerDependencies": {
     "expect": "^29.0.0",
-    "mocha": "^8.4.0 || ^9.0.0 || ^10.0.0"
+    "mocha": "^8.4.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
+  },
+  "peerDependenciesMeta": {
+    "mocha": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=14.15.0"
-  },
-  "acceptDependencies": {
-    "mocha": "^11.0.0"
   }
 }

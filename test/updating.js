@@ -31,7 +31,7 @@ describe('updating test', function () {
             added: 1,
             removed: 1,
             updated: 1,
-          })
+          }),
         );
       });
     }

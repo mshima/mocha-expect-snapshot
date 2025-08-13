@@ -23,7 +23,7 @@ describe('non matching test', function () {
             added: 0,
             removed: 0,
             updated: 0,
-          })
+          }),
         );
       });
     }

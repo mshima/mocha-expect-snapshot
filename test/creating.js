@@ -24,7 +24,7 @@ describe('creting test', function () {
             added: 3,
             removed: 0,
             updated: 0,
-          })
+          }),
         );
       });
     }

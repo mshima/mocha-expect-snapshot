@@ -1,6 +1,6 @@
 # mocha-expect-snapshot
 
-Mocha plugin to use `expect` with `jest-snapshot` and derived projects like `jest-image-snapshot`.
+Mocha plugin to use `expect` with `@vitest/snapshot` and derived projects like `jest-image-snapshot`.
 
 ## Usage
 
@@ -104,7 +104,7 @@ const { expect } = require('expect');
 
 describe('foo', function () {
   before(function () {
-    // https://github.com/facebook/jest/blob/817d8b6aca845dd4fcfd7f8316293e69f3a116c5/packages/jest-snapshot/src/State.ts#L25-L30
+    // https://github.com/vitest-dev/vitest/blob/main/packages/snapshot/src/state.ts
     this.snapshotStateOptions = { updateSnapshot: 'new' };
     this.snapshotFile = '/foo';
   });

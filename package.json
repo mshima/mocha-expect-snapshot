@@ -5,7 +5,7 @@
     "mocha",
     "expect",
     "snapshot",
-    "jest-snapshot",
+    "vitest-snapshot",
     "test",
     "jest",
     "jest-image-snapshot"
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@jest/expect": "^30.0.5",
+    "@vitest/snapshot": "^4.1.0",
     "expect": "^30.0.5",
-    "jest-snapshot": "^30.0.5",
     "picocolors": "^1.1.1"
   },
   "devDependencies": {
